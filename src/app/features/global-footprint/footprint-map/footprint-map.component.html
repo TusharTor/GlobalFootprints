@@ -1,0 +1,14 @@
+<google-map
+  height="100%"
+  width="100%"
+  [center]="center"
+  [zoom]="zoom"
+  [options]="mapOptions">
+
+  <map-marker
+      *ngFor="let marker of markers"
+      [position]="marker.position"
+      [icon]="marker.icon">
+  </map-marker>
+
+</google-map>

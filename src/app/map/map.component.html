@@ -1,0 +1,122 @@
+<div class="map-container" *ngIf="apiLoaded">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo-icon" aria-label="Company logo">
+          <img class="logo-img" src="assets/White_Tor_Logo.png" alt="TOR logo" />
+        </div>
+        <div class="logo-text">
+          <h1>Global footprint</h1>
+        </div>
+      </div>
+      <div class="header-tools">
+        <!-- <div class="theme-switch" role="group" aria-label="Map theme switcher">
+          <button type="button" class="theme-btn" [class.active]="themeMode === 'current'" (click)="setTheme('current')">Current</button>
+          <button type="button" class="theme-btn" [class.active]="themeMode === 'heatmap'" (click)="setTheme('heatmap')">Heatmap</button>
+          <button type="button" class="theme-btn" [class.active]="themeMode === 'tor-control-room'" (click)="setTheme('tor-control-room')">Tor Control Room</button>
+          <button type="button" class="theme-btn" [class.active]="themeMode === 'signal-grid-teal'" (click)="setTheme('signal-grid-teal')">Signal Grid Teal</button>
+          <button type="button" class="theme-btn" [class.active]="themeMode === 'light-atlas'" (click)="setTheme('light-atlas')">Light Atlas</button>
+          <button type="button" class="theme-btn" [class.active]="themeMode === 'intensity-map'" (click)="setTheme('intensity-map')">Intensity Map</button>
+          <button type="button" class="theme-btn" [class.active]="themeMode === 'photograph-density'" (click)="setTheme('photograph-density')">Photograph Density</button>
+        </div> -->
+
+        <!-- <div class="stat">
+          <span class="stat-value">{{ markers.length }}</span>
+          <span class="stat-label">Locations</span>
+        </div> -->
+        <div class="zone-filter">
+          <label for="zone-select" class="zone-label">Zone</label>
+          <select id="zone-select" class="zone-select" [value]="selectedZone" (change)="onZoneDropdownChange($event)">
+            <option value="All Zones">All Zones</option>
+            <option *ngFor="let zone of zones" [value]="zone">{{ zone }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content area -->
+  <div class="content-wrapper">
+    <!-- Map area -->
+    <div class="map-shell">
+      <google-map
+        height="100%"
+        width="100%"
+        [center]="center"
+        [zoom]="zoom"
+        (mapInitialized)="onMapInitialized($event)"
+        [options]="mapOptions">
+      </google-map>
+
+      <!-- Heatmap loading overlay -->
+      <div class="heatmap-loading" *ngIf="heatmapLoading">
+        <div class="loading-spinner small"></div>
+        <span>Loading region data...</span>
+      </div>
+
+      <!-- Choropleth legend -->
+      <!-- <div class="choropleth-legend" *ngIf="themeMode === 'heatmap' && !heatmapLoading">
+        <p class="legend-title">Location Density</p>
+        <div class="legend-scale">
+          <div class="legend-entry"><span class="legend-swatch" style="background:#f2f4f7"></span><span>None</span></div>
+          <div class="legend-entry"><span class="legend-swatch" style="background:#c7d2fe"></span><span>Low</span></div>
+          <div class="legend-entry"><span class="legend-swatch" style="background:#6366f1"></span><span>Medium</span></div>
+          <div class="legend-entry"><span class="legend-swatch" style="background:#ef4444"></span><span>High</span></div>
+          <div class="legend-entry"><span class="legend-swatch" style="background:#b91c1c"></span><span>Very High</span></div>
+        </div> -->
+      <!-- </div> -->
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" [class.active]="selectedMarker">
+      <div class="sidebar-header">
+        <h3>Location Details</h3>
+        <button class="close-btn" *ngIf="selectedMarker" (click)="selectedMarker = undefined">x</button>
+      </div>
+      
+      <div class="sidebar-content">
+        <div *ngIf="selectedMarker; else noSelection" class="detail-card">
+          <div class="detail-item">
+            <label>Location Name</label>
+            <p>{{ selectedMarker.title }}</p>
+          </div>
+          <div class="detail-item">
+            <label>Country/Region</label>
+            <p>{{ selectedMarker.country }}</p>
+          </div>
+          <div class="detail-item">
+            <label>Coordinates</label>
+            <p class="coordinates">
+              <span class="lat">{{ selectedMarker.position.lat | number:'1.4-4' }} deg</span>
+              <span class="lng">{{ selectedMarker.position.lng | number:'1.4-4' }} deg</span>
+            </p>
+          </div>
+        </div>
+        
+        <ng-template #noSelection>
+          <div class="empty-state">
+            <div class="empty-icon">PIN</div>
+            <p>Click on a pin to view location details</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Error state -->
+<div *ngIf="apiLoadError" class="error-banner">
+  <span>!</span>
+  <p>{{ apiLoadError }}</p>
+</div>
+
+<!-- Loading state -->
+<div *ngIf="!apiLoaded" class="loading-screen">
+  <div class="loading-spinner"></div>
+  <p>Loading Global Footprints...</p>
+</div>
+
+
+
+<!-- <circle cx="8" cy="8" r="5" fill="none" stroke="#F15A24" stroke-width="1.5" opacity="0.7"/> -->
